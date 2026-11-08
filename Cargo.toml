@@ -1,0 +1,56 @@
+[package]
+name = "wx-receipt-verify"
+version = "0.1.0"
+edition = "2021"
+# 1.85 is zeroize's declared rust-version (via p384), the highest floor in the
+# normal-dependency tree; dev-deps (rune-record, tempfile) are excluded since
+# they never build for users (cargo metadata + cargo tree -e normal,
+# 2026-11-07). Raise it when a dependency bump raises that floor.
+rust-version = "1.85"
+description = "Offline verifier and scorer for TunnelMind's signed weather record (Receipt v1, RFC 3161 tokens)"
+license = "Apache-2.0"
+readme = "README.md"
+# The parity test needs the git-only rune-record dev-dependency, which
+# publish strips; leave it out so `cargo test` works from the crates.io tarball.
+exclude = ["tests/rune_record_parity.rs"]
+keywords = ["receipt", "ed25519", "rfc3161", "verifier", "weather"]
+categories = ["cryptography", "command-line-utilities"]
+# Placeholder until the public repo exists (published after the merge, spec 027 wx-receipt-oss).
+repository = "https://github.com/TunnelMind/wx-receipt-verify"
+
+# Self-contained on purpose: crates.io only (rune-record's verify side is
+# vendored in src/receipt.rs), no `path` or `workspace = true` keys, its own
+# Cargo.lock, so this directory builds alone outside the tm-weather workspace
+# and `cargo publish` accepts it.
+
+[lib]
+name = "wx_receipt_verify"
+path = "src/lib.rs"
+
+[[bin]]
+name = "wx-receipt-verify"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+# PEM bodies of the pinned TSA chains (tsa.rs).
+base64 = "0.22"
+hex = "0.4"
+# SHA-256 for commitments and the TSA chain's RSA/ECDSA P-256 checks.
+ring = "0.17"
+# ECDSA P-384 with SHA-512 (freetsa's token signature, tsa.rs): ring has no such
+# pairing. Verify-only use.
+p384 = { version = "0.13", default-features = false, features = ["ecdsa"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# RFC 8785 JCS for receipt_v1 verification (src/receipt.rs), the same crate
+# and major rune-record canonicalises with.
+serde_json_canonicalizer = "0.3"
+
+[dev-dependencies]
+tempfile = "3"
+# Parity only (tests/rune_record_parity.rs): the vendored src/receipt.rs must
+# match the PUBLIC TunnelMind/rune-record it was copied from, at this rev.
+# Git-only dev-deps are stripped by `cargo publish`, so the crate still
+# publishes. Bump together with src/receipt.rs. No manifest feature (toml).
+rune-record = { git = "https://github.com/TunnelMind/rune-record", rev = "0959ac5feca909fb9adb98a0e3f7be460aca4c4c", default-features = false }

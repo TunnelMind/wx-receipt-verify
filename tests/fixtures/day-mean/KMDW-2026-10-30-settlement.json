@@ -1,0 +1,55 @@
+{
+ "attestation_strength": "software",
+ "chain": {
+  "previous_receipt_hash": null,
+  "sequence": 0
+ },
+ "payload": {
+  "bracket_hit_idx": 1,
+  "cli": {
+   "first_seen": "2026-10-31T06:40:03.002Z",
+   "product_id": "2026-10-31T06-40-03.002Z-0093ce881b86",
+   "sha256": "0093ce881b861a7274e933c919b5406edb85bb9f19df2bb036320bfee74b7863"
+  },
+  "climate_day": "2026-10-30",
+  "market_settlement_source": "twc",
+  "observed_high_f": 57,
+  "outcome": "no_bet",
+  "pnl": {
+   "fee_cents": 0,
+   "gross_cents": 0,
+   "net_cents": 0
+  },
+  "prev": "0xf2f39124b48565eeda3490f4a2a894d55228e7c76fff968374256f5af42a5547",
+  "reveal_refs": [
+   "0x002c481f76685e478560575f2d756d2287a2eb5c6e5a7c612a48d3ed6dd7ee27",
+   "0x1b901790bc27fa004217037fe7c30b02656d77a8a616b3dbf1291a8d53a38f34"
+  ],
+  "scores": {
+   "brier_bp": 180,
+   "log_score_milli": -110
+  },
+  "seq": 14,
+  "settlement_source": "nws_cli",
+  "station": "KMDW",
+  "type": "wx.settlement"
+ },
+ "payload_hash": "0xbae32ada39727b948bbfa43da7ff39e333be54d2c14be17347dc1859a8b086f2",
+ "receipt_id": "01a191d4-beb3-7789-8d42-9533594395ac",
+ "receipt_version": "1.0",
+ "signature": {
+  "algorithm": "Ed25519",
+  "key_id": "rune-e178a040",
+  "public_key": "74QUQ75XdZ0yXHkFGKKXljtvPZtsW7YzBHGEVyNu0V0=",
+  "value": "VIobQcVZCnKdVkchUbbb1KovkSTYCUbvrbeDgz5BMs1FsE+ev6zNqHUkflCSLbaEmmL+DDliL3siwnOy1D1kDg=="
+ },
+ "source": {
+  "endpoint": "wx-run",
+  "lens": "tm-weather",
+  "node_id": "wx-run"
+ },
+ "timestamp": "2026-10-31T12:00:01.203Z",
+ "timestamp_proof": {
+  "method": "none"
+ }
+}

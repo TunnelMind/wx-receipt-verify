@@ -1,0 +1,6 @@
+RFC 3161 fixture tokens for tests/tsa.rs: real TSA answers from 2026-10-28,
+one from freetsa.org and one from DigiCert, kept as the TSAs returned them.
+Per TSA: sample.tsr (the DER TimeStampResp as the TSA returned it),
+sample.imprint.txt (the SHA-256 messageImprint it stamps, hex) and chain.pem
+(the pinned chain, signer up to a self-signed root). Do not regenerate: a new
+request would give different tokens and the tests pin these.

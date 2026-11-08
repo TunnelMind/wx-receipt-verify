@@ -1,0 +1,44 @@
+# gitleaks fingerprints of known false positives (spec 027 wx-receipt-oss, task O006).
+# All 37 are the "public_key" field of published, signed receipts in tests/fixtures/day-mean:
+# the log's Ed25519 PUBLIC key (key_id rune-e178a040, hex ef841443…ed15d, published at
+# https://tunnelmind.ai/weather/log/v1/key.json). Not a secret; the fixtures cannot change
+# without breaking their signatures. Each line pins one file and line, so any new finding
+# still fails the scan. Fingerprints are relative to `gitleaks detect --no-git --source wx-receipt-verify`
+# run from the repo root.
+wx-receipt-verify/tests/fixtures/day-mean/KATL-2026-10-30-1400.revealed.json:generic-api-key:1709
+wx-receipt-verify/tests/fixtures/day-mean/KATL-2026-10-30-1500.revealed.json:generic-api-key:1751
+wx-receipt-verify/tests/fixtures/day-mean/KATL-2026-10-30-1600.revealed.json:generic-api-key:1793
+wx-receipt-verify/tests/fixtures/day-mean/KATL-2026-10-30-1700.revealed.json:generic-api-key:1841
+wx-receipt-verify/tests/fixtures/day-mean/KATL-2026-10-30-settlement.json:generic-api-key:45
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-30-1400.revealed.json:generic-api-key:2945
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-30-1500.revealed.json:generic-api-key:3017
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-30-1600.revealed.json:generic-api-key:3065
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-30-1700.revealed.json:generic-api-key:3081
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-30-settlement.json:generic-api-key:45
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-31-1400.revealed.json:generic-api-key:3167
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-31-1500.revealed.json:generic-api-key:3251
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-31-1600.revealed.json:generic-api-key:3311
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-31-1700.revealed.json:generic-api-key:3395
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-10-31-settlement.json:generic-api-key:45
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-02-1400.revealed.json:generic-api-key:2897
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-02-1500.revealed.json:generic-api-key:2951
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-02-1600.revealed.json:generic-api-key:2993
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-02-1700.revealed.json:generic-api-key:3009
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-02-settlement.json:generic-api-key:45
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-03-1400.revealed.json:generic-api-key:2903
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-03-1500.revealed.json:generic-api-key:2945
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-03-1600.revealed.json:generic-api-key:2999
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-03-1700.revealed.json:generic-api-key:3015
+wx-receipt-verify/tests/fixtures/day-mean/KDEN-2026-11-03-settlement.json:generic-api-key:45
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-10-30-1400.revealed.json:generic-api-key:2243
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-10-30-1500.revealed.json:generic-api-key:2297
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-10-30-settlement.json:generic-api-key:43
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-11-03-1400.revealed.json:generic-api-key:2681
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-11-03-1500.revealed.json:generic-api-key:2735
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-11-03-1600.revealed.json:generic-api-key:2745
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-11-03-1700.revealed.json:generic-api-key:2799
+wx-receipt-verify/tests/fixtures/day-mean/KMDW-2026-11-03-settlement.json:generic-api-key:45
+wx-receipt-verify/tests/fixtures/day-mean/KMIA-2026-11-03-1400.revealed.json:generic-api-key:2933
+wx-receipt-verify/tests/fixtures/day-mean/KMIA-2026-11-03-1500.revealed.json:generic-api-key:2967
+wx-receipt-verify/tests/fixtures/day-mean/KMIA-2026-11-03-1600.revealed.json:generic-api-key:3009
+wx-receipt-verify/tests/fixtures/day-mean/KMIA-2026-11-03-settlement.json:generic-api-key:44

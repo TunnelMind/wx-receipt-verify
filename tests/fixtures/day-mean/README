@@ -1,0 +1,8 @@
+Spec 125 SC-002 fixtures for tests/score.rs: the 8 group-A NWS settlements
+(KATL 2026-10-30; KDEN 2026-10-30, 10-31, 11-02, 11-03; KMDW 2026-10-30,
+11-03; KMIA 2026-11-03) and every forecast reveal in their reveal_refs.
+Copied read-only on 2026-11-04 (publish run generated_at 2026-11-04T13:07:06.123Z)
+by plain GET from https://tunnelmind.ai/weather/log/v1/days/<day>.json.
+Each file is the `receipt` object of the day file's entry of that name, as
+it appears in the day file with its leading indentation removed. Do not
+regenerate or edit: these are the published, signed records.
