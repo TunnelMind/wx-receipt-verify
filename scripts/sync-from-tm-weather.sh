@@ -73,7 +73,8 @@ case "${1:-}" in
       done
     fi
     cp -a "$tmp/new/." .
-    { echo "tm-weather $sha"; echo; file_list | sums; } > TM_WEATHER_SYNC
+    # Record the archive's files, not the tree's: a stray local file must not be blessed.
+    { echo "tm-weather $sha"; echo; (cd "$tmp/new" && find . -type f | sed 's|^\./||' | LC_ALL=C sort | sums); } > TM_WEATHER_SYNC
     echo "synced tm-weather $sha" ;;
   --check)
     [ -f TM_WEATHER_SYNC ] || die "TM_WEATHER_SYNC missing: run '$0 sync <commit>'"
