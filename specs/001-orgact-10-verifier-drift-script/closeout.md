@@ -1,4 +1,8 @@
-# Closeout: org review item 10, verifier drift script
+# Closeout: verifier drift script
+
+## Public-safety redaction (R003)
+
+This repository is public. The files under `specs/001-orgact-10-verifier-drift-script/` were first committed with internal planning text (machine name, local paths, the owner's name, private tm-weather task ids). The redaction is a new commit on the PR branch; there was no force push and no history rewrite. The earlier commit on the PR branch still contains the old text. The owner may ask for the PR to be redone from a clean branch.
 
 ## (a) What changed
 
@@ -9,14 +13,14 @@ One new file, `scripts/sync-from-tm-weather.sh` (executable, 90 lines). No crate
 - Owned, never-mirrored paths (`.git`, `target*`, `specs`, the script itself, `TM_WEATHER_SYNC`): the `OWNED` regex at `scripts/sync-from-tm-weather.sh:33`.
 - Owned-path guard in `extract()`: `scripts/sync-from-tm-weather.sh:50-52` (dies if the tm-weather archive contains an owned path).
 
-## (b) T001 check-after output (verbatim; scratch clone at /tmp/o10, removed afterwards)
+## (b) T001 check-after output (verbatim; scratch clone, removed afterwards)
 
 Local paths in the block below were replaced with placeholders (`<worktree>`, `<tm-weather>`, `~`); everything else is verbatim.
 
 ```
-+ git clone -q <worktree> /tmp/o10
-+ cp scripts/sync-from-tm-weather.sh /tmp/o10/scripts/
-+ cd /tmp/o10
++ git clone -q <worktree> <scratch>
++ cp scripts/sync-from-tm-weather.sh <scratch>/scripts/
++ cd <scratch>
 + export TM_WEATHER_DIR=<tm-weather>
 + TM_WEATHER_DIR=<tm-weather>
 + scripts/sync-from-tm-weather.sh sync 8858de0
@@ -69,11 +73,11 @@ sync-from-tm-weather: cannot resolve HEAD in /nonexistent
 + echo 'exit 1'
 exit 1
 + git status --porcelain
-+ cmp - /tmp/before.txt
++ cmp - <before.txt>
 + echo 'tree unchanged'
 tree unchanged
 + cd <worktree>
-+ rm -rf /tmp/o10
++ rm -rf <scratch>
 + scripts/sync-from-tm-weather.sh --check
 sync-from-tm-weather: TM_WEATHER_SYNC missing: run 'scripts/sync-from-tm-weather.sh sync <commit>'
 + echo 'exit 1'
@@ -85,21 +89,20 @@ exit 1
 
 ## (c) Expected state
 
-`scripts/sync-from-tm-weather.sh --check` reports drift (exits non-zero: no sync recorded) in this repo until org review item 11 runs the first sync; this is expected
+`scripts/sync-from-tm-weather.sh --check` reports drift (exits non-zero: no sync recorded) in this repo until the first sync runs; this is expected
 
 ## (d) Not done, and why
 
-- First sync: org review item 11, held on tm-weather spec 030 T005 + T006.
-- CI workflow: would fail until item 11 runs the first sync.
-- crates.io check: needs network and an owner decision; see owner step 4.
+- First sync: held on two checks the owner runs first (see step 2 below).
+- CI workflow: would fail until the first sync runs.
+- crates.io check: needs network and an owner decision; see owner step 3.
 - Publish: not in scope.
 - Version bump: no crate source changed.
 
 ## (e) Owner steps after merge
 
 1. Merge this draft PR on your word.
-2. tm-weather spec 030 T005: mint the errata key (`wx-archive keygen ~/.tm-weather/errata.key`). Check: follow-up run sets `PINNED_ERRATA_PUBKEY`.
-3. T006: old vs new `wx-receipt verify` on a public-log snapshot, `cmp` stdout + exit. Check: no difference.
-4. Check whether `wx-receipt-verify` 0.1.0 is on crates.io (`cargo search wx-receipt-verify`). Check: if listed, item 11 needs a version bump.
-5. Item 11 as its own crew run: `TM_WEATHER_DIR=~/tm-weather scripts/sync-from-tm-weather.sh sync <tm-weather main sha>` then commit. Check: `scripts/sync-from-tm-weather.sh --check` prints "ok: matches tm-weather <sha>" and `cargo test --locked` passes.
-6. Only after 5, optionally a CI step `scripts/sync-from-tm-weather.sh --check` (hash mode).
+2. Run the two held pre-sync checks: the errata key step, and old vs new `wx-receipt verify` on a public-log snapshot (`cmp` stdout + exit). Check: no difference.
+3. Check whether `wx-receipt-verify` 0.1.0 is on crates.io (`cargo search wx-receipt-verify`). Check: if listed, the first sync needs a version bump.
+4. The first sync as its own crew run: `TM_WEATHER_DIR=<tm-weather> scripts/sync-from-tm-weather.sh sync <tm-weather main sha>` then commit. Check: `scripts/sync-from-tm-weather.sh --check` prints "ok: matches tm-weather <sha>" and `cargo test --locked` passes.
+5. Only after 4, optionally a CI step `scripts/sync-from-tm-weather.sh --check` (hash mode).

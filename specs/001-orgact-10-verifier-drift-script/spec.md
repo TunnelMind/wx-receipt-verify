@@ -1,53 +1,48 @@
-# Feature: sync script and drift check for the public weather verifier (org review item 10)
+# Feature: sync script and drift check for the public weather verifier
 
 **Run:** orgact-10-verifier-drift-script · **Repo:** TunnelMind/wx-receipt-verify (PUBLIC) · **Date:** 2026-11-13
-**Source:** org review plan `~/.crew/work/org-review-1/code/docs/ORG-REVIEW-2026-11.md` section (d) item 10
-(lines 565-586), cut decision lines 169-190; Fable's line 10 and "Order and coupling" in
-`~/.crew/coord/fix5/fable-recs-15-17-2026-11-13.md` Part 1 (APPROVE, reversible).
+**Source:** the owner's org review plan, drift-script item (approved, reversible).
 
 ## Intent
 
 The public verifier is a copy of `tm-weather/wx-receipt-verify/` with nothing tying the two together; four days
 after release 4 of 68 files differ. Add one script that makes this repo a generated copy of that crate
-(a `sync` mode and a hash-mode `--check`, the rune-record `sync-from-rune.sh` pattern) — and do **not** run the
+(a `sync` mode and a hash-mode `--check`, the pattern of a sibling repo's sync script) — and do **not** run the
 first sync.
 
 Key sentences from the owner's prompt:
 
-> "Approved as written. Add the sync and drift script only: do NOT run the first sync (item 11 is on hold: it
-> waits on the errata key and the old-versus-new comparison)."
+> "Approved as written. Add the sync and drift script only: do NOT run the first sync (the first sync is on hold: it
+> waits on two checks the owner runs)."
 >
-> "The script's --check is expected to report drift until item 11 runs: say so in the PR text. No crate source
+> "The script's --check is expected to report drift until the first sync runs: say so in the PR text. No crate source
 > change, no publish."
 >
-> "ONE DRAFT PR that comes back to Josh for his merge word. Do not merge."
+> "ONE DRAFT PR that comes back to the owner for their merge word. Do not merge."
 
-From item 10: "it adds one file, a script that copies `tm-weather/wx-receipt-verify/` over this repo, records
+From the plan item: "it adds one file, a script that copies `tm-weather/wx-receipt-verify/` over this repo, records
 what it copied, and has a `--check` mode". "The script must copy the crate directory only, because everything
 else in tm-weather is private." "This item adds no workflow."
 
 ## Re-verification against this repo (2026-11-13, by the planner)
 
-Every fact item 10 cites, checked on this worktree (HEAD `e837ddb`, = `main`) and on the freshest tm-weather
-checkout on BEAST (`~/crewbase-tm-weather`, `main` = `origin/main` = `8858de0`, 2026-11-13 06:48):
+Every fact the plan item cites, checked on this worktree (HEAD `e837ddb`, = `main`) and on the freshest tm-weather
+checkout (`main` = `origin/main` = `8858de0`, 2026-11-13):
 
 | Cited fact | Status |
 |---|---|
 | Public repo holds `scripts/standalone-check.sh` only, no `.github/` | TRUE (`git ls-files`; no `.github`) |
 | No sync script / record exists | TRUE |
 | 4 files differ: `README.md`, `src/cli.rs`, `src/obs/running_max.rs`, `src/verify.rs`, plus 4 `tests/fixtures/errata-2026-11-07/*.json` only in tm-weather | TRUE against `8858de0` (`diff -rq`); 68 files here, 72 in tm-weather's crate |
-| `PINNED_ERRATA_PUBKEY` still `None` | TRUE, `wx-receipt-verify/src/verify.rs:77` in tm-weather `8858de0` |
-| T005 / T006 unchecked | TRUE, `specs/030-wx-verify-highs-1/tasks.md:10-11` in tm-weather `8858de0` |
-| rune-record pinned by rev | TRUE, `Cargo.toml:56` here |
-| Pattern script | `~/.crew/coord/org-review/repos/rune-record/scripts/sync-from-rune.sh` (hash mode, lines 22-26) and its `ci.yml:12-14` |
+| Pattern script exists in a sibling repo | TRUE (hash mode, its `sync` and `--check` shape) |
 | 0 open PRs in this repo | NOT CHECKED by the planner: `gh pr list` was denied in this session → GATE 0 |
 
-Note: `~/tm-weather` (the default checkout) is behind (`main` at `b60c5c6`, 2026-11-10); against it
-`src/obs/running_max.rs` does NOT differ. The acceptance test therefore pins tm-weather commit `8858de0`.
+Note: an older tm-weather checkout (`main` at `b60c5c6`, 2026-11-10) does not show the `src/obs/running_max.rs`
+difference. The acceptance test therefore pins tm-weather commit `8858de0` (the fixture commit).
 
 ## User Scenarios
 
-**US1 — maintainer brings the public copy up to date (item 11, later, on Josh's word).**
+**US1 — maintainer brings the public copy up to date (the first sync, later, on the owner's word).**
 Given a tm-weather checkout, when `TM_WEATHER_DIR=<checkout> scripts/sync-from-tm-weather.sh sync <commit>` runs,
 then the crate directory at that commit replaces this repo's mirrored files and a record file names the commit and
 every mirrored file's sha256.
@@ -57,13 +52,13 @@ Given the record exists, when `scripts/sync-from-tm-weather.sh --check` runs wit
 every mirrored file matches its recorded hash and the file set is unchanged ("hash mode"); with a tm-weather
 checkout holding the recorded commit it also regenerates and `diff -r`s.
 
-**US3 — today, before item 11.** Given no record, `--check` exits non-zero and says no sync is recorded.
+**US3 — today, before the first sync.** Given no record, `--check` exits non-zero and says no sync is recorded.
 
-### Acceptance scenarios (item 10's check-after, the run's acceptance test)
+### Acceptance scenarios (the plan item's check-after, the run's acceptance test)
 
 1. The run's code commit `git diff --stat main..HEAD -- . ':!specs'` lists `scripts/sync-from-tm-weather.sh` and
    nothing else.
-2. In a scratch clone with `TM_WEATHER_DIR=~/crewbase-tm-weather`, `sync 8858de0` leaves `git status --porcelain`
+2. In a scratch clone with `TM_WEATHER_DIR=<tm-weather>`, `sync 8858de0` leaves `git status --porcelain`
    showing exactly: ` M README.md`, ` M src/cli.rs`, ` M src/obs/running_max.rs`, ` M src/verify.rs`,
    `?? tests/fixtures/errata-2026-11-07/` (4 json files), `?? TM_WEATHER_SYNC`. Nothing else.
 3. In that scratch clone after the sync, `--check` exits 0 (full mode: "matches tm-weather 8858de0…"); with
@@ -78,7 +73,7 @@ checkout holding the recorded commit it also regenerates and `diff -r`s.
 - **FR-001** Add exactly one file, `scripts/sync-from-tm-weather.sh` (bash, `set -euo pipefail`, executable bit
   committed). No other file outside `specs/` changes.
 - **FR-002** `sync <commit>` reads tm-weather only via `git -C "$TM_WEATHER_DIR" archive <sha> wx-receipt-verify`
-  (never checks out, fetches or writes there); default `TM_WEATHER_DIR=$HOME/tm-weather`; resolves `<commit>` with
+  (never checks out, fetches or writes there); default `TM_WEATHER_DIR=$HOME/tm-weather` (a tm-weather checkout); resolves `<commit>` with
   `rev-parse --verify "<commit>^{commit}"`.
 - **FR-003** Only the `wx-receipt-verify/` directory of tm-weather is read; nothing else from that private repo can
   reach this tree.
@@ -92,7 +87,7 @@ checkout holding the recorded commit it also regenerates and `diff -r`s.
   regenerates and compares the whole mirrored set; otherwise it prints `ok: hash mode only …`.
 - **FR-007** Header comment states: the source of truth is tm-weather's crate; never edit mirrored files here;
   hash mode proves the tree matches the record, not that the record matches tm-weather; `--check` fails until the
-  first sync (item 11).
+  first sync.
 - **FR-008** `shellcheck` clean.
 - **FR-009** No workflow, no README edit, no crate source change, no version bump, no first sync committed.
 
@@ -100,7 +95,7 @@ checkout holding the recorded commit it also regenerates and `diff -r`s.
 
 - **SC-001** Acceptance scenarios 1-5 all hold, with their command output pasted into the closeout.
 - **SC-002** `bash -n scripts/sync-from-tm-weather.sh && shellcheck scripts/sync-from-tm-weather.sh` exit 0.
-- **SC-003** `CARGO_TARGET_DIR=/tmp/orgact10-target cargo test --locked` exits 0 (31+ tests pass, as on `e837ddb`).
+- **SC-003** `CARGO_TARGET_DIR=<dir outside the tree> cargo test --locked` exits 0 (31+ tests pass, as on `e837ddb`).
 - **SC-004** `git status --porcelain` in this worktree shows no `TM_WEATHER_SYNC`, no `target/`, no changed crate file.
 
 ## Edge Cases
@@ -114,14 +109,14 @@ checkout holding the recorded commit it also regenerates and `diff -r`s.
 
 ## Assumptions
 
-- `~/crewbase-tm-weather` at `8858de0` is a fair stand-in for tm-weather `main` (it equals its `origin/main`).
+- A tm-weather checkout at `8858de0` is a fair stand-in for tm-weather `main` (it equals its `origin/main`).
   Reading it with `git archive` changes nothing there.
-- Script name `sync-from-tm-weather.sh` and record name `TM_WEATHER_SYNC` follow rune-record's
-  `sync-from-rune.sh` / `RUNE_SYNC`.
+- Script name `sync-from-tm-weather.sh` and record name `TM_WEATHER_SYNC` follow the sibling
+  repo's sync script and record naming.
 - The crew's own `specs/001-…` files ride in the same branch; "nothing else" in the check-after means outside `specs/`.
 
 ## Out of Scope (and why)
 
-- Running the first sync / committing `TM_WEATHER_SYNC` — item 11, held (T005 errata key, T006 comparison).
-- A CI workflow running `--check` — would fail until item 11; item 10 adds no workflow.
+- Running the first sync / committing `TM_WEATHER_SYNC` — held on two checks the owner runs first.
+- A CI workflow running `--check` — would fail until the first sync; this item adds no workflow.
 - Any crates.io check or publish; any change in tm-weather or any other repo; any merge or deploy.
