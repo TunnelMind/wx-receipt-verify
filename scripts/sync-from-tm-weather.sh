@@ -65,6 +65,10 @@ case "${1:-}" in
     # (git diff shows it) and empty dirs linger. Copy-then-delete if that bites.
     if [ -f TM_WEATHER_SYNC ]; then
       tail -n +3 TM_WEATHER_SYNC | cut -c67- | while IFS= read -r f; do
+        # TM_WEATHER_SYNC is tracked in a public repo: never rm outside the
+        # tree or a path this repo owns, whatever a merged line says.
+        case $f in /*|*..*|'') die "bad path in TM_WEATHER_SYNC: $f";; esac
+        if grep -Eq "$OWNED" <<<"$f"; then die "bad path in TM_WEATHER_SYNC: $f"; fi
         [ -e "$tmp/new/$f" ] || rm -f -- "$f"
       done
     fi
